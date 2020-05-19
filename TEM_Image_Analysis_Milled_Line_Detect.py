@@ -70,375 +70,375 @@ def tem_image_analysis_milled_line_detect(**kwargs):
         print(">  Real image width read from commandline: " + str(real_width) + " microns\n")
         # print(">  Output filename prefactor: " + str(output_filename_prefac))
 
-        # Try to load the image in grayscale
-        imgdata_original = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+    # Try to load the image in grayscale
+    imgdata_original = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
 
-        # get dims
-        img_width = imgdata_original.shape[1]
-        img_height = imgdata_original.shape[0]
+    # get dims
+    img_width = imgdata_original.shape[1]
+    img_height = imgdata_original.shape[0]
 
-        if verbose:
-            print(">  Input image width : " + str(img_width) + " Pixels")
-            print(">  Input image height: " + str(img_height) + " Pixels")
+    if verbose:
+        print(">  Input image width : " + str(img_width) + " Pixels")
+        print(">  Input image height: " + str(img_height) + " Pixels")
 
-        # pixel to real width
-        length_factor = img_width / real_width  # pixels/ um
+    # pixel to real width
+    length_factor = img_width / real_width  # pixels/ um
 
-        if verbose:
-            print(">  There are:   " + str(length_factor) + " Pixels / micron")
+    if verbose:
+        print(">  There are:   " + str(length_factor) + " Pixels / micron")
 
-        # -- Create an original colour copy to draw on --
-        imgdata_original_copy = cv2.cvtColor(imgdata_original, cv2.COLOR_GRAY2BGR)
+    # -- Create an original colour copy to draw on --
+    imgdata_original_copy = cv2.cvtColor(imgdata_original, cv2.COLOR_GRAY2BGR)
 
-        # -- Do the initial user defined crop  --
+    # -- Do the initial user defined crop  --
 
-        # Create a copy to modify
-        imgdata_cropped = np.copy(imgdata_original)
+    # Create a copy to modify
+    imgdata_cropped = np.copy(imgdata_original)
 
-        # Crop image
-        imgdata_cropped = imgdata_cropped[crop_top:(img_height - crop_bottom), crop_left:(img_width - crop_right)]
-        # Save the cropped image
-        # cv2.imwrite(output_filename_prefac + "cropped.tif", imgdata_cropped)
+    # Crop image
+    imgdata_cropped = imgdata_cropped[crop_top:(img_height - crop_bottom), crop_left:(img_width - crop_right)]
+    # Save the cropped image
+    # cv2.imwrite(output_filename_prefac + "cropped.tif", imgdata_cropped)
 
-        # draw crop lines on original copy
-        cv2.line(imgdata_original_copy,
-                 (0, (img_height - crop_bottom)),
-                 (img_width, (img_height - crop_bottom)), (0, 0, 255), 5)
-        cv2.line(imgdata_original_copy,
-                 (0, crop_top),
-                 (img_width, crop_top), (0, 0, 255), 5)
-        cv2.line(imgdata_original_copy,
-                 (crop_left, 0),
-                 (crop_left, img_height), (0, 0, 255), 5)
-        cv2.line(imgdata_original_copy,
-                 ((img_width - crop_right), 0),
-                 ((img_width - crop_right), img_height), (0, 0, 255), 5)
+    # draw crop lines on original copy
+    cv2.line(imgdata_original_copy,
+             (0, (img_height - crop_bottom)),
+             (img_width, (img_height - crop_bottom)), (0, 0, 255), 5)
+    cv2.line(imgdata_original_copy,
+             (0, crop_top),
+             (img_width, crop_top), (0, 0, 255), 5)
+    cv2.line(imgdata_original_copy,
+             (crop_left, 0),
+             (crop_left, img_height), (0, 0, 255), 5)
+    cv2.line(imgdata_original_copy,
+             ((img_width - crop_right), 0),
+             ((img_width - crop_right), img_height), (0, 0, 255), 5)
 
-        # Draw a circle in the centre of the cropped region
-        img_centre_x = imgdata_cropped.shape[1] / 2.0
-        img_centre_y = imgdata_cropped.shape[0] / 2.0
-        cv2.circle(imgdata_original_copy,
-                   (int(img_centre_x + crop_left), int(img_centre_y + crop_top)),
-                   10, (0, 255, 0), 3)
+    # Draw a circle in the centre of the cropped region
+    img_centre_x = imgdata_cropped.shape[1] / 2.0
+    img_centre_y = imgdata_cropped.shape[0] / 2.0
+    cv2.circle(imgdata_original_copy,
+               (int(img_centre_x + crop_left), int(img_centre_y + crop_top)),
+               10, (0, 255, 0), 3)
 
-        # Draw line and text showing the input width set above (maybe OCR this in the future)
-        # Draw double ended arrow
-        cv2.arrowedLine(imgdata_original_copy,
-                        (0, int(img_height - 0.5 * crop_bottom)),
-                        (img_width, int(img_height - 0.5 * crop_bottom)),
-                        (255, 0, 255),
-                        6,
-                        tipLength=0.04)
-        cv2.arrowedLine(imgdata_original_copy,
-                        (img_width, int(img_height - 0.5 * crop_bottom)),
-                        (0, int(img_height - 0.5 * crop_bottom)),
-                        (255, 0, 255),
-                        6,
-                        tipLength=0.04)
-        # Write label
-        cv2.putText(imgdata_original_copy,
-                    (str(real_width) + " microns"),
-                    (int(img_centre_x - 100), int(img_height - 0.5 * crop_bottom - 15)),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    3,
+    # Draw line and text showing the input width set above (maybe OCR this in the future)
+    # Draw double ended arrow
+    cv2.arrowedLine(imgdata_original_copy,
+                    (0, int(img_height - 0.5 * crop_bottom)),
+                    (img_width, int(img_height - 0.5 * crop_bottom)),
                     (255, 0, 255),
-                    10)
+                    6,
+                    tipLength=0.04)
+    cv2.arrowedLine(imgdata_original_copy,
+                    (img_width, int(img_height - 0.5 * crop_bottom)),
+                    (0, int(img_height - 0.5 * crop_bottom)),
+                    (255, 0, 255),
+                    6,
+                    tipLength=0.04)
+    # Write label
+    cv2.putText(imgdata_original_copy,
+                (str(real_width) + " microns"),
+                (int(img_centre_x - 100), int(img_height - 0.5 * crop_bottom - 15)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                3,
+                (255, 0, 255),
+                10)
 
-        # -- find horizontal lines on sample (upper and lower edges) ---
+    # -- find horizontal lines on sample (upper and lower edges) ---
 
-        # average central total_width_cols columns
-        half_total_width_cols = int(total_width_cols / 2.0)
-        avdata = np.average(
-            imgdata_cropped[:, int(img_centre_x - half_total_width_cols):int(img_centre_x + half_total_width_cols)],
-            axis=1)
+    # average central total_width_cols columns
+    half_total_width_cols = int(total_width_cols / 2.0)
+    avdata = np.average(
+        imgdata_cropped[:, int(img_centre_x - half_total_width_cols):int(img_centre_x + half_total_width_cols)],
+        axis=1)
 
-        # x coordinate (number 0 to height)
-        x = np.linspace(0, avdata.shape[0] - 1, num=avdata.shape[0])
+    # x coordinate (number 0 to height)
+    x = np.linspace(0, avdata.shape[0] - 1, num=avdata.shape[0])
 
-        # plot the average of the image columns vs x
-        fig = plt.figure(figsize=(12, 8), dpi=100)
-        # Create a new subplot from a grid of 1x1
-        ax = fig.add_subplot(111)
-        ax.plot(x, avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
+    # plot the average of the image columns vs x
+    fig = plt.figure(figsize=(12, 8), dpi=100)
+    # Create a new subplot from a grid of 1x1
+    ax = fig.add_subplot(111)
+    ax.plot(x, avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
 
-        # smooth signal with savitzky-golay filter  (multiple small window filters to ensure min location correct)
-        for i in range(10):
-            avdata = savgol_filter(avdata, 9, 2)  # window size 31, polynomial order 2
+    # smooth signal with savitzky-golay filter  (multiple small window filters to ensure min location correct)
+    for i in range(10):
+        avdata = savgol_filter(avdata, 9, 2)  # window size 31, polynomial order 2
 
-        # find maxima and minima
-        a = np.diff(np.sign(np.diff(avdata))).nonzero()[0] + 1  # local min+max
-        b = (np.diff(np.sign(np.diff(avdata))) > 0).nonzero()[0] + 1  # local min
-        c = (np.diff(np.sign(np.diff(avdata))) < 0).nonzero()[0] + 1  # local max
+    # find maxima and minima
+    a = np.diff(np.sign(np.diff(avdata))).nonzero()[0] + 1  # local min+max
+    b = (np.diff(np.sign(np.diff(avdata))) > 0).nonzero()[0] + 1  # local min
+    c = (np.diff(np.sign(np.diff(avdata))) < 0).nonzero()[0] + 1  # local max
 
-        # plot the filtered signal and detected max, minima
-        ax.plot(x, avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
+    # plot the filtered signal and detected max, minima
+    ax.plot(x, avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
 
-        ax.plot(x[b], avdata[b], "o", color="green", label="min")
-        ax.plot(x[c], avdata[c], "o", color="orange", label="max")
-        plt.xlim(0, imgdata_cropped.shape[0])
-        # x tick labels
-        x = np.zeros(0)
-        pix = 0
-        while True:
-            x = np.append(x, [pix])
-            pix += 200
-            if pix > imgdata_cropped.shape[0]:
-                if pix + 150 > imgdata_cropped.shape[0]:
-                    x = np.append(x, [imgdata_cropped.shape[0]])
-                break
-        plt.xticks(x)
-        plt.title("Average gray level of each row vs pixel distance from the top")
-        plt.xlabel("Distance from top of image, [pixels]")
-        plt.ylabel("Average gray level")
-        plt.minorticks_on()
+    ax.plot(x[b], avdata[b], "o", color="green", label="min")
+    ax.plot(x[c], avdata[c], "o", color="orange", label="max")
+    plt.xlim(0, imgdata_cropped.shape[0])
+    # x tick labels
+    x = np.zeros(0)
+    pix = 0
+    while True:
+        x = np.append(x, [pix])
+        pix += 200
+        if pix > imgdata_cropped.shape[0]:
+            if pix + 150 > imgdata_cropped.shape[0]:
+                x = np.append(x, [imgdata_cropped.shape[0]])
+            break
+    plt.xticks(x)
+    plt.title("Average gray level of each row vs pixel distance from the top")
+    plt.xlabel("Distance from top of image, [pixels]")
+    plt.ylabel("Average gray level")
+    plt.minorticks_on()
 
-        # pick out the two biggest spikes
-        # filter broad peaks (width defined above)
-        # filter peaks beyond given cutoff (defined above) from crop lines.
-        # print(a)
-        # print(avdata[a])
-        spike1 = 0
-        spike2 = 0
-        spike1_pix = 0
-        spike2_pix = 0
-        spike1_h = 0
-        spike2_h = 0
+    # pick out the two biggest spikes
+    # filter broad peaks (width defined above)
+    # filter peaks beyond given cutoff (defined above) from crop lines.
+    # print(a)
+    # print(avdata[a])
+    spike1 = 0
+    spike2 = 0
+    spike1_pix = 0
+    spike2_pix = 0
+    spike1_h = 0
+    spike2_h = 0
 
-        for i in range(len(a) - 2):
-            h = (avdata[a[i + 1]] - avdata[a[i]]) + (avdata[a[i + 1]] - avdata[a[i + 2]])
-            # find current min spike and overwrite with new value if it is bigger
-            # if both the same, just use the first.
-            if spike1 == spike2:
-                if h > spike1:
-                    if (a[i + 2] - a[i]) < peak_width_max:
-                        if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_cropped.shape[0] - peak_dist_max)):
-                            # print(a[i+1], peak_dist_max, (imgdata_cropped.shape[0]- peak_dist_max ) )
-                            spike1 = h
-                            spike1_h = avdata[a[i + 1]]
-                            spike1_pix = a[i + 1]
-            elif spike1 == min(spike1, spike2):
-                if h > spike1:
-                    if (a[i + 2] - a[i]) < peak_width_max:
-                        if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_cropped.shape[0] - peak_dist_max)):
-                            # print(a[i+1], peak_dist_max, (imgdata_cropped.shape[0]- peak_dist_max ) )
-                            spike1 = h
-                            spike1_h = avdata[a[i + 1]]
-                            spike1_pix = a[i + 1]
-            elif h > spike2:
+    for i in range(len(a) - 2):
+        h = (avdata[a[i + 1]] - avdata[a[i]]) + (avdata[a[i + 1]] - avdata[a[i + 2]])
+        # find current min spike and overwrite with new value if it is bigger
+        # if both the same, just use the first.
+        if spike1 == spike2:
+            if h > spike1:
                 if (a[i + 2] - a[i]) < peak_width_max:
                     if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_cropped.shape[0] - peak_dist_max)):
                         # print(a[i+1], peak_dist_max, (imgdata_cropped.shape[0]- peak_dist_max ) )
-                        spike2 = h
-                        spike2_h = avdata[a[i + 1]]
-                        spike2_pix = a[i + 1]
+                        spike1 = h
+                        spike1_h = avdata[a[i + 1]]
+                        spike1_pix = a[i + 1]
+        elif spike1 == min(spike1, spike2):
+            if h > spike1:
+                if (a[i + 2] - a[i]) < peak_width_max:
+                    if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_cropped.shape[0] - peak_dist_max)):
+                        # print(a[i+1], peak_dist_max, (imgdata_cropped.shape[0]- peak_dist_max ) )
+                        spike1 = h
+                        spike1_h = avdata[a[i + 1]]
+                        spike1_pix = a[i + 1]
+        elif h > spike2:
+            if (a[i + 2] - a[i]) < peak_width_max:
+                if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_cropped.shape[0] - peak_dist_max)):
+                    # print(a[i+1], peak_dist_max, (imgdata_cropped.shape[0]- peak_dist_max ) )
+                    spike2 = h
+                    spike2_h = avdata[a[i + 1]]
+                    spike2_pix = a[i + 1]
 
-        # text labels
-        plt.text(spike1_pix, spike1_h + 3, 'Spike 1')
-        plt.text(spike2_pix, spike2_h + 3, 'Spike 2')
+    # text labels
+    plt.text(spike1_pix, spike1_h + 3, 'Spike 1')
+    plt.text(spike2_pix, spike2_h + 3, 'Spike 2')
 
-        plt.legend()
-        # save plot
-        plt.savefig(str(output_filename_prefac) + "sample_vert_edge_detect.pdf", dpi=100)
+    plt.legend(loc="upper center")
+    # save plot
+    plt.savefig(str(output_filename_prefac) + "sample_vert_edge_detect.pdf", dpi=100)
 
-        if verbose:
-            print("Horizontal spike1 peak at ", spike1_pix)
-            print("Horizontal spike2 peak at ", spike2_pix)
-            print("Distance between horizontal marks: " +
-                  str(abs(spike2_pix - spike1_pix) / length_factor) + " microns")
+    if verbose:
+        print("Horizontal spike1 peak at ", spike1_pix)
+        print("Horizontal spike2 peak at ", spike2_pix)
+        print("Distance between horizontal marks: " +
+              str(abs(spike2_pix - spike1_pix) / length_factor) + " microns")
 
-        # Draw green crop lines (for region considered in finding horizontal edges)
-        cv2.line(imgdata_original_copy,
-                 (crop_left + int(img_centre_x - half_total_width_cols), 0),
-                 (crop_left + int(img_centre_x - half_total_width_cols), img_height),
-                 (0, 255, 0), 2)
-        cv2.line(imgdata_original_copy,
-                 (crop_left + int(img_centre_x + half_total_width_cols), 0),
-                 (crop_left + int(img_centre_x + half_total_width_cols), img_height),
-                 (0, 255, 0), 2)
+    # Draw green crop lines (for region considered in finding horizontal edges)
+    cv2.line(imgdata_original_copy,
+             (crop_left + int(img_centre_x - half_total_width_cols), 0),
+             (crop_left + int(img_centre_x - half_total_width_cols), img_height),
+             (0, 255, 0), 2)
+    cv2.line(imgdata_original_copy,
+             (crop_left + int(img_centre_x + half_total_width_cols), 0),
+             (crop_left + int(img_centre_x + half_total_width_cols), img_height),
+             (0, 255, 0), 2)
 
-        # Draw yellow lines over the detected horizontal lines in the image
-        cv2.line(imgdata_original_copy, (0, spike1_pix + crop_top), (img_width, spike1_pix + crop_top),
-                 (0, 255, 255), 3)
-        cv2.line(imgdata_original_copy, (0, spike2_pix + crop_top), (img_width, spike2_pix + crop_top),
-                 (0, 255, 255), 3)
+    # Draw yellow lines over the detected horizontal lines in the image
+    cv2.line(imgdata_original_copy, (0, spike1_pix + crop_top), (img_width, spike1_pix + crop_top),
+             (0, 255, 255), 3)
+    cv2.line(imgdata_original_copy, (0, spike2_pix + crop_top), (img_width, spike2_pix + crop_top),
+             (0, 255, 255), 3)
 
-        # Draw arrow and write computed distance on the annotated image
-        # Draw double ended arrow
-        cv2.arrowedLine(imgdata_original_copy,
-                        (int(img_width * 0.75), int(spike1_pix + crop_top)),
-                        (int(img_width * 0.75), int(spike2_pix + crop_top)),
-                        (0, 255, 255),
-                        6,
-                        tipLength=0.04)
-        cv2.arrowedLine(imgdata_original_copy,
-                        (int(img_width * 0.75), int(spike2_pix + crop_top)),
-                        (int(img_width * 0.75), int(spike1_pix + crop_top)),
-                        (0, 255, 255),
-                        6,
-                        tipLength=0.04)
-        # Write label
-        cv2.putText(imgdata_original_copy,
-                    (str(round(abs(spike2_pix - spike1_pix) / length_factor, 3)) + " microns"),
-                    (int(img_width * 0.75 + 10), int(img_centre_y + crop_top)),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    3,
+    # Draw arrow and write computed distance on the annotated image
+    # Draw double ended arrow
+    cv2.arrowedLine(imgdata_original_copy,
+                    (int(img_width * 0.75), int(spike1_pix + crop_top)),
+                    (int(img_width * 0.75), int(spike2_pix + crop_top)),
                     (0, 255, 255),
-                    10)
+                    6,
+                    tipLength=0.04)
+    cv2.arrowedLine(imgdata_original_copy,
+                    (int(img_width * 0.75), int(spike2_pix + crop_top)),
+                    (int(img_width * 0.75), int(spike1_pix + crop_top)),
+                    (0, 255, 255),
+                    6,
+                    tipLength=0.04)
+    # Write label
+    cv2.putText(imgdata_original_copy,
+                (str(round(abs(spike2_pix - spike1_pix) / length_factor, 3)) + " microns"),
+                (int(img_width * 0.75 + 10), int(img_centre_y + crop_top)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                3,
+                (0, 255, 255),
+                10)
 
-        # annotate with crop lines
-        cv2.line(imgdata_original_copy,
-                 (0, (int(min(spike1_pix, spike2_pix) + vertical_crop_extra + crop_top))),
-                 (img_width, (int(min(spike1_pix, spike2_pix) + vertical_crop_extra + crop_top))),
-                 (0, 255, 0), 2)
-        cv2.line(imgdata_original_copy,
-                 (0, (int(max(spike1_pix, spike2_pix) - vertical_crop_extra + crop_top))),
-                 (img_width, (int(max(spike1_pix, spike2_pix) - vertical_crop_extra + crop_top))),
-                 (0, 255, 0), 2)
+    # annotate with crop lines
+    cv2.line(imgdata_original_copy,
+             (0, (int(min(spike1_pix, spike2_pix) + vertical_crop_extra + crop_top))),
+             (img_width, (int(min(spike1_pix, spike2_pix) + vertical_crop_extra + crop_top))),
+             (0, 255, 0), 2)
+    cv2.line(imgdata_original_copy,
+             (0, (int(max(spike1_pix, spike2_pix) - vertical_crop_extra + crop_top))),
+             (img_width, (int(max(spike1_pix, spike2_pix) - vertical_crop_extra + crop_top))),
+             (0, 255, 0), 2)
 
-        # -- crop vertically ---
+    # -- crop vertically ---
 
-        # Create a copy to modify
-        imgdata_vertcropped = np.copy(imgdata_cropped)
+    # Create a copy to modify
+    imgdata_vertcropped = np.copy(imgdata_cropped)
 
-        # Crop image
-        imgdata_vertcropped = imgdata_vertcropped[int(min(spike1_pix, spike2_pix) + vertical_crop_extra):int(
-            max(spike1_pix, spike2_pix) - vertical_crop_extra), :]
+    # Crop image
+    imgdata_vertcropped = imgdata_vertcropped[int(min(spike1_pix, spike2_pix) + vertical_crop_extra):int(
+        max(spike1_pix, spike2_pix) - vertical_crop_extra), :]
 
-        # Save the cropped image
-        # cv2.imwrite(output_filename_prefac + "vertcropped.tif", imgdata_vertcropped)
+    # Save the cropped image
+    # cv2.imwrite(output_filename_prefac + "vertcropped.tif", imgdata_vertcropped)
 
-        # --  average rows in the cropped image  ---
-        avdata = np.average(imgdata_vertcropped, axis=0)
+    # --  average rows in the cropped image  ---
+    avdata = np.average(imgdata_vertcropped, axis=0)
 
-        fig = plt.figure(figsize=(12, 8), dpi=100)
-        # Create a new subplot from a grid of 1x1
-        ax = fig.add_subplot(111)
+    fig = plt.figure(figsize=(12, 8), dpi=100)
+    # Create a new subplot from a grid of 1x1
+    ax = fig.add_subplot(111)
 
-        ax.plot(avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
+    ax.plot(avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
 
-        # smoothing filter
-        for i in range(10):
-            avdata = savgol_filter(avdata, 21, 2)  # window size 201, polynomial order 2
+    # smoothing filter
+    for i in range(10):
+        avdata = savgol_filter(avdata, 21, 2)  # window size 201, polynomial order 2
 
-        ax.plot(avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
-        # x coordinate (number 0 to width)
-        x = np.linspace(0, avdata.shape[0] - 1, num=avdata.shape[0])
-        # detect min and max
-        a = np.diff(np.sign(np.diff(avdata))).nonzero()[0] + 1  # local min+max
-        b = (np.diff(np.sign(np.diff(avdata))) > 0).nonzero()[0] + 1  # local min
-        c = (np.diff(np.sign(np.diff(avdata))) < 0).nonzero()[0] + 1  # local max
+    ax.plot(avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
+    # x coordinate (number 0 to width)
+    x = np.linspace(0, avdata.shape[0] - 1, num=avdata.shape[0])
+    # detect min and max
+    a = np.diff(np.sign(np.diff(avdata))).nonzero()[0] + 1  # local min+max
+    b = (np.diff(np.sign(np.diff(avdata))) > 0).nonzero()[0] + 1  # local min
+    c = (np.diff(np.sign(np.diff(avdata))) < 0).nonzero()[0] + 1  # local max
 
-        # pick out the two biggest spikes
-        # print(a)
-        # print(avdata[a])
-        vspike1 = 0
-        vspike2 = 0
-        vspike1_pix = 0
-        vspike2_pix = 0
-        vspike1_h = 0
-        vspike2_h = 0
+    # pick out the two biggest spikes
+    # print(a)
+    # print(avdata[a])
+    vspike1 = 0
+    vspike2 = 0
+    vspike1_pix = 0
+    vspike2_pix = 0
+    vspike1_h = 0
+    vspike2_h = 0
 
-        for i in range(len(a) - 2):
-            h = (avdata[a[i]] - avdata[a[i + 1]]) + (avdata[a[i + 2]] - avdata[a[i + 1]])
-            # find current min spike and overwrite with new value if it is bigger
-            # if both the same, just use the first.
-            if vspike1 == vspike2:
-                if h > vspike1:
-                    if (a[i + 2] - a[i]) < peak_width_max:
-                        if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_vertcropped.shape[1] - peak_dist_max)):
-                            # print(a[i+1], peak_dist_max, (imgdata_vertcropped.shape[1]- peak_dist_max ) )
-                            vspike1 = h
-                            vspike1_pix = a[i + 1]
-                            vspike1_h = avdata[a[i + 1]]
-            elif vspike1 == min(vspike1, vspike2):
-                if h > vspike1:
-                    if (a[i + 2] - a[i]) < peak_width_max:
-                        if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_vertcropped.shape[1] - peak_dist_max)):
-                            # print(a[i+1], peak_dist_max, (imgdata_vertcropped.shape[1]- peak_dist_max ) )
-                            vspike1 = h
-                            vspike1_pix = a[i + 1]
-                            vspike1_h = avdata[a[i + 1]]
-            elif h > vspike2:
+    for i in range(len(a) - 2):
+        h = (avdata[a[i]] - avdata[a[i + 1]]) + (avdata[a[i + 2]] - avdata[a[i + 1]])
+        # find current min spike and overwrite with new value if it is bigger
+        # if both the same, just use the first.
+        if vspike1 == vspike2:
+            if h > vspike1:
                 if (a[i + 2] - a[i]) < peak_width_max:
                     if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_vertcropped.shape[1] - peak_dist_max)):
                         # print(a[i+1], peak_dist_max, (imgdata_vertcropped.shape[1]- peak_dist_max ) )
-                        vspike2 = h
-                        vspike2_pix = a[i + 1]
-                        vspike2_h = avdata[a[i + 1]]
+                        vspike1 = h
+                        vspike1_pix = a[i + 1]
+                        vspike1_h = avdata[a[i + 1]]
+        elif vspike1 == min(vspike1, vspike2):
+            if h > vspike1:
+                if (a[i + 2] - a[i]) < peak_width_max:
+                    if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_vertcropped.shape[1] - peak_dist_max)):
+                        # print(a[i+1], peak_dist_max, (imgdata_vertcropped.shape[1]- peak_dist_max ) )
+                        vspike1 = h
+                        vspike1_pix = a[i + 1]
+                        vspike1_h = avdata[a[i + 1]]
+        elif h > vspike2:
+            if (a[i + 2] - a[i]) < peak_width_max:
+                if (a[i + 1] < peak_dist_max) or (a[i + 1] > (imgdata_vertcropped.shape[1] - peak_dist_max)):
+                    # print(a[i+1], peak_dist_max, (imgdata_vertcropped.shape[1]- peak_dist_max ) )
+                    vspike2 = h
+                    vspike2_pix = a[i + 1]
+                    vspike2_h = avdata[a[i + 1]]
 
-        # text labels
-        plt.text(vspike1_pix, vspike1_h + 3, 'Spike 1')
-        plt.text(vspike2_pix, vspike2_h + 3, 'Spike 2')
+    # text labels
+    plt.text(vspike1_pix, vspike1_h + 3, 'Spike 1')
+    plt.text(vspike2_pix, vspike2_h + 3, 'Spike 2')
 
-        ax.plot(x[b], avdata[b], "o", color="green", label="min")
-        ax.plot(x[c], avdata[c], "o", color="orange", label="max")
-        plt.xlim(0, imgdata_vertcropped.shape[1])
+    ax.plot(x[b], avdata[b], "o", color="green", label="min")
+    ax.plot(x[c], avdata[c], "o", color="orange", label="max")
+    plt.xlim(0, imgdata_vertcropped.shape[1])
 
-        # x tick labels
-        x = np.zeros(0)
-        pix = 0
-        while True:
-            x = np.append(x, [pix])
-            pix += 500
-            if pix > imgdata_vertcropped.shape[1]:
-                x = np.append(x, [imgdata_vertcropped.shape[1]])
-                break
-        plt.xticks(x)
+    # x tick labels
+    x = np.zeros(0)
+    pix = 0
+    while True:
+        x = np.append(x, [pix])
+        pix += 500
+        if pix > imgdata_vertcropped.shape[1]:
+            x = np.append(x, [imgdata_vertcropped.shape[1]])
+            break
+    plt.xticks(x)
 
-        plt.title("Average gray level of each column vs pixel distance from the left")
-        plt.xlabel("Distance from the left of image, [pixels]")
-        plt.ylabel("Average gray level")
-        plt.minorticks_on()
+    plt.title("Average gray level of each column vs pixel distance from the left")
+    plt.xlabel("Distance from the left of image, [pixels]")
+    plt.ylabel("Average gray level")
+    plt.minorticks_on()
 
-        plt.legend()
-        plt.savefig(str(output_filename_prefac) + "sample_mark_detect.pdf", dpi=100)
+    plt.legend(loc="upper center")
+    plt.savefig(str(output_filename_prefac) + "sample_mark_detect.pdf", dpi=100)
 
-        if verbose:
-            print("Vertical spike1 peak at ", vspike1_pix)
-            print("Vertical spike2 peak at ", vspike2_pix)
-            print(
-                "Distance between vertical marks: " + str(abs(vspike2_pix - vspike1_pix) / length_factor) + " microns")
+    if verbose:
+        print("Vertical spike1 peak at ", vspike1_pix)
+        print("Vertical spike2 peak at ", vspike2_pix)
+        print(
+            "Distance between vertical marks: " + str(abs(vspike2_pix - vspike1_pix) / length_factor) + " microns")
 
-        # Draw blue lines over the detected vertical lines in the image
-        cv2.line(imgdata_original_copy,
-                 (int(min(vspike1_pix, vspike2_pix) + crop_left), 0),
-                 (int(min(vspike1_pix, vspike2_pix) + crop_left), img_height),
-                 (255, 100, 0),
-                 3)
+    # Draw blue lines over the detected vertical lines in the image
+    cv2.line(imgdata_original_copy,
+             (int(min(vspike1_pix, vspike2_pix) + crop_left), 0),
+             (int(min(vspike1_pix, vspike2_pix) + crop_left), img_height),
+             (255, 100, 0),
+             3)
 
-        cv2.line(imgdata_original_copy,
-                 (int(max(vspike1_pix, vspike2_pix) + crop_left), 0),
-                 (int(max(vspike1_pix, vspike2_pix) + crop_left), img_height),
-                 (255, 100, 0),
-                 3)
+    cv2.line(imgdata_original_copy,
+             (int(max(vspike1_pix, vspike2_pix) + crop_left), 0),
+             (int(max(vspike1_pix, vspike2_pix) + crop_left), img_height),
+             (255, 100, 0),
+             3)
 
-        # Draw arrow and write computed distance on the annotated image
+    # Draw arrow and write computed distance on the annotated image
 
-        # draw double ended arrow
-        cv2.arrowedLine(imgdata_original_copy,
-                        (int(min(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
-                        (int(max(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
-                        (255, 100, 0),
-                        6,
-                        tipLength=0.04)
-        cv2.arrowedLine(imgdata_original_copy,
-                        (int(max(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
-                        (int(min(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
-                        (255, 100, 0),
-                        6,
-                        tipLength=0.04)
-        # Write label
-
-        cv2.putText(imgdata_original_copy,
-                    (str(round((abs(vspike2_pix - vspike1_pix) / length_factor), 3)) + " microns"),
-                    (int(img_centre_x - 100), int(img_height - crop_bottom - 70)),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    3,
+    # draw double ended arrow
+    cv2.arrowedLine(imgdata_original_copy,
+                    (int(min(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
+                    (int(max(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
                     (255, 100, 0),
-                    10)
+                    6,
+                    tipLength=0.04)
+    cv2.arrowedLine(imgdata_original_copy,
+                    (int(max(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
+                    (int(min(vspike1_pix, vspike2_pix) + crop_left), int(img_height - crop_bottom - 50)),
+                    (255, 100, 0),
+                    6,
+                    tipLength=0.04)
+    # Write label
 
-        # save annotated image
-        cv2.imwrite(output_filename_prefac + "annotated.tif", imgdata_original_copy)
+    cv2.putText(imgdata_original_copy,
+                (str(round((abs(vspike2_pix - vspike1_pix) / length_factor), 3)) + " microns"),
+                (int(img_centre_x - 100), int(img_height - crop_bottom - 70)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                3,
+                (255, 100, 0),
+                10)
+
+    # save annotated image
+    cv2.imwrite(output_filename_prefac + "annotated.tif", imgdata_original_copy)
 
 
 # If we are running this script interactively, call the function safely
