@@ -157,9 +157,11 @@ def tem_image_analysis_milled_line_detect(**kwargs):
 
     # plot the average of the image columns vs x
     fig = plt.figure(figsize=(12, 8), dpi=100)
+    plt.rcParams["font.weight"] = "bold"
+    plt.rcParams['axes.labelweight'] = 'bold'
     # Create a new subplot from a grid of 1x1
     ax = fig.add_subplot(111)
-    ax.plot(x, avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
+    ax.plot(x, avdata, color="blue", linewidth=2, linestyle="-", label="Average gray level")
 
     # smooth signal with savitzky-golay filter  (multiple small window filters to ensure min location correct)
     for i in range(10):
@@ -171,11 +173,13 @@ def tem_image_analysis_milled_line_detect(**kwargs):
     c = (np.diff(np.sign(np.diff(avdata))) < 0).nonzero()[0] + 1  # local max
 
     # plot the filtered signal and detected max, minima
-    ax.plot(x, avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
+    ax.plot(x, avdata, color="red", linewidth=1.5, linestyle="-", label="Savitzky-Golay filter")
 
     ax.plot(x[b], avdata[b], "o", color="green", label="min")
     ax.plot(x[c], avdata[c], "o", color="orange", label="max")
     plt.xlim(0, imgdata_cropped.shape[0])
+    plt.ylim(max(0, min(avdata)-10), max(avdata)+20)
+
     # x tick labels
     x = np.zeros(0)
     pix = 0
@@ -183,13 +187,13 @@ def tem_image_analysis_milled_line_detect(**kwargs):
         x = np.append(x, [pix])
         pix += 200
         if pix > imgdata_cropped.shape[0]:
-            if pix + 150 > imgdata_cropped.shape[0]:
+            if imgdata_cropped.shape[0] - pix + 200 > 150:
                 x = np.append(x, [imgdata_cropped.shape[0]])
             break
     plt.xticks(x)
-    plt.title("Average gray level of each row vs pixel distance from the top")
-    plt.xlabel("Distance from top of image, [pixels]")
-    plt.ylabel("Average gray level")
+    plt.title("Average gray level of each row vs pixel distance from the top", fontweight='bold', size=20)
+    plt.xlabel("Distance from the top of the image, Pixels", fontweight='bold', size=18)
+    plt.ylabel("Average gray level", fontweight='bold', size=18)
     plt.minorticks_on()
 
     # pick out the two biggest spikes
@@ -233,12 +237,12 @@ def tem_image_analysis_milled_line_detect(**kwargs):
                     spike2_pix = a[i + 1]
 
     # text labels
-    plt.text(spike1_pix, spike1_h + 3, 'Spike 1')
-    plt.text(spike2_pix, spike2_h + 3, 'Spike 2')
+    plt.text(spike1_pix, spike1_h + 5, 'Spike 1')
+    plt.text(spike2_pix, spike2_h + 5, 'Spike 2')
 
     plt.legend(loc="upper center")
     # save plot
-    plt.savefig(str(output_filename_prefac) + "sample_vert_edge_detect.pdf", dpi=100)
+    plt.savefig(str(output_filename_prefac) + "sample_horizontal_edge_detect.pdf", dpi=100)
 
     if verbose:
         print("Horizontal spike1 peak at ", spike1_pix)
@@ -314,13 +318,13 @@ def tem_image_analysis_milled_line_detect(**kwargs):
     # Create a new subplot from a grid of 1x1
     ax = fig.add_subplot(111)
 
-    ax.plot(avdata, color="blue", linewidth=1.5, linestyle="-", label="raw average")
+    ax.plot(avdata, color="blue", linewidth=2, linestyle="-", label="Average gray level")
 
     # smoothing filter
     for i in range(10):
         avdata = savgol_filter(avdata, 21, 2)  # window size 201, polynomial order 2
 
-    ax.plot(avdata, color="red", linewidth=1.5, linestyle="-", label="savitzky-golay filter")
+    ax.plot(avdata, color="red", linewidth=1.5, linestyle="-", label="Savitzky-Golay filter")
     # x coordinate (number 0 to width)
     x = np.linspace(0, avdata.shape[0] - 1, num=avdata.shape[0])
     # detect min and max
@@ -367,12 +371,17 @@ def tem_image_analysis_milled_line_detect(**kwargs):
                     vspike2_h = avdata[a[i + 1]]
 
     # text labels
-    plt.text(vspike1_pix, vspike1_h + 3, 'Spike 1')
-    plt.text(vspike2_pix, vspike2_h + 3, 'Spike 2')
+    if (vspike1_h - 5) < 0:
+        plt.text(vspike1_pix, 10, 'Spike 1')
+        plt.text(vspike2_pix, 10, 'Spike 2')
+    else:
+        plt.text(vspike1_pix, vspike1_h - 5, 'Spike 1')
+        plt.text(vspike2_pix, vspike2_h - 5, 'Spike 2')
 
     ax.plot(x[b], avdata[b], "o", color="green", label="min")
     ax.plot(x[c], avdata[c], "o", color="orange", label="max")
     plt.xlim(0, imgdata_vertcropped.shape[1])
+    plt.ylim(max(0, min(avdata) - 10), max(avdata) + 15)
 
     # x tick labels
     x = np.zeros(0)
@@ -381,13 +390,14 @@ def tem_image_analysis_milled_line_detect(**kwargs):
         x = np.append(x, [pix])
         pix += 500
         if pix > imgdata_vertcropped.shape[1]:
-            x = np.append(x, [imgdata_vertcropped.shape[1]])
+            if imgdata_vertcropped.shape[1] - pix + 500 > 150:
+                x = np.append(x, [imgdata_vertcropped.shape[1]])
             break
     plt.xticks(x)
 
-    plt.title("Average gray level of each column vs pixel distance from the left")
-    plt.xlabel("Distance from the left of image, [pixels]")
-    plt.ylabel("Average gray level")
+    plt.title("Average gray level of each column vs pixel distance from the left", fontweight='bold', size=20)
+    plt.xlabel("Distance from the left of the image, Pixels", size=18)
+    plt.ylabel("Average gray level", size=18)
     plt.minorticks_on()
 
     plt.legend(loc="upper center")
