@@ -16,7 +16,7 @@ Matplotlib
 
 Clone the repository to a directory of your choice:
 ~~~
- git clone git://github.com/Kenny-Jolley/TEM_Image_Analysis.git
+ git clone git://github.com/Kenny-Jolley/SEM_Image_Analysis.git
 ~~~
 
 
