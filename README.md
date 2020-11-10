@@ -1,5 +1,5 @@
 # SEM_Image_Analysis
-Python scripts for analysing TEM images
+Python scripts for analysing SEM images
 
 
 ## Requirements
