@@ -40,7 +40,7 @@ The filename and img_width are required, the cropping parameters are optional.
 
         
 
-### Example Images
+### Example_Data
 
 This folder contains a collection of example images that can be analysed by the scripts.  
 To analyse all the example images, just run the script: `Analyse_Images.py`  
