@@ -142,3 +142,6 @@ cython_debug/
 
 # ignore pdf outputs
 *.pdf
+
+# ignore annotated.tif files
+*_annotated.tif
