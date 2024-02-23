@@ -178,7 +178,10 @@ def sem_image_analysis_depo_line_detect(**kwargs):
     ax.plot(x[b], avdata[b], "o", color="green", label="min")
     ax.plot(x[c], avdata[c], "o", color="orange", label="max")
     plt.xlim(0, imgdata_cropped.shape[0])
-    plt.ylim(max(0, min(avdata) - 10), max(avdata) + 20)
+    ylimMin = max(0, int((min(avdata) - 5) / 10) * 10)
+    ylimMax = max(avdata) + 20
+    plt.ylim(ylimMin, ylimMax)
+    #plt.ylim(max(0, min(avdata) - 10), max(avdata) + 20)
     # x tick labels
     x = np.zeros(0)
     pix = 0
@@ -237,15 +240,15 @@ def sem_image_analysis_depo_line_detect(**kwargs):
                     spike2_pix = a[i + 1]
 
     # text labels
-    plt.text(spike1_pix, spike1_h + 5, 'Spike 1', fontweight='bold')
-    plt.text(spike2_pix, spike2_h + 5, 'Spike 2', fontweight='bold')
+    plt.text(spike1_pix, spike1_h + 5, 'Spike 1', fontweight='bold', size=18)
+    plt.text(spike2_pix, spike2_h + 5, 'Spike 2', fontweight='bold', size=18)
 
     legend_properties = {'weight': 'bold'}
-    plt.legend(loc="upper center", prop=legend_properties)
+    plt.legend(loc="upper center", fontsize=14)
 
     # save plot
-    plt.savefig(str(output_filename_prefac) + "sample_horizontal_edge_detect.pdf", dpi=100)
-
+    plt.savefig(str(output_filename_prefac) + "sample_horizontal_edge_detect.pdf", dpi=300)
+    plt.savefig(str(output_filename_prefac) + "sample_horizontal_edge_detect.jpg", dpi=300)
     if verbose:
         print("Horizontal spike1 peak at ", spike1_pix)
         print("Horizontal spike2 peak at ", spike2_pix)
@@ -373,14 +376,16 @@ def sem_image_analysis_depo_line_detect(**kwargs):
                     vspike2_h = avdata[a[i + 1]]
 
     # text labels
-    plt.text(vspike1_pix, vspike1_h + 5, 'Spike 1')
-    plt.text(vspike2_pix, vspike2_h + 5, 'Spike 2')
+    plt.text(vspike1_pix, vspike1_h + 5, 'Spike 1', size=18)
+    plt.text(vspike2_pix, vspike2_h + 5, 'Spike 2', size=18)
 
     ax.plot(x[b], avdata[b], "o", color="green", label="min")
     ax.plot(x[c], avdata[c], "o", color="orange", label="max")
     plt.xlim(0, imgdata_vertcropped.shape[1])
-    plt.ylim(max(0, min(avdata) - 10), max(avdata) + 15)
-
+    ylimMin = max(0, int((min(avdata) - 5)/10) * 10)
+    ylimMax = max(avdata) + 20
+    plt.ylim(ylimMin, ylimMax)
+    # plt.ylim(max(0, min(avdata) - 10), max(avdata) + 15)
     # x tick labels
     x = np.zeros(0)
     pix = 0
@@ -398,9 +403,9 @@ def sem_image_analysis_depo_line_detect(**kwargs):
     plt.ylabel("Average gray level", size=18)
     plt.minorticks_on()
 
-    plt.legend(loc="upper center")
-    plt.savefig(str(output_filename_prefac) + "sample_mark_detect.pdf", dpi=100)
-
+    plt.legend(loc="upper center", fontsize=14)
+    plt.savefig(str(output_filename_prefac) + "sample_mark_detect.pdf", dpi=300)
+    plt.savefig(str(output_filename_prefac) + "sample_mark_detect.jpg", dpi=300)
     if verbose:
         print("Vertical spike1 peak at ", vspike1_pix)
         print("Vertical spike2 peak at ", vspike2_pix)
